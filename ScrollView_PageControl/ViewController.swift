@@ -8,11 +8,36 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UIScrollViewDelegate {
 
+    @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var pageControl: UIPageControl!
+    
+    var images: [String] = ["0", "1", "2"]
+    var frame = CGRect(x: 0, y: 0, width: 0, height:0)
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
+        pageControl.numberOfPages = images.count
+        for index in 0..<images.count {
+            frame.origin.y = scrollView.frame.size.height * CGFloat(index)
+            frame.size = scrollView.frame.size
+            
+            let imgView = UIImageView(frame: frame)
+            imgView.image = UIImage(named: images[index])
+            self.scrollView.addSubview(imgView)
+        }
+        
+        scrollView.contentSize = CGSize(width: scrollView.frame.size.width, height: (scrollView.frame.size.height * CGFloat(images.count)))
+        scrollView.delegate = self
+    }
+    
+    // ScrollView Method
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        let pageNumber = scrollView.contentOffset.y / scrollView.frame.size.height
+        pageControl.currentPage = Int(pageNumber)
     }
 
 
